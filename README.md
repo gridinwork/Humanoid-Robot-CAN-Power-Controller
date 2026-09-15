@@ -2,6 +2,20 @@
 
 ![Humanoid Robot Project](0-Title.jpg)
 
+## Hardware Demonstration Videos
+
+### Video 1 — Hardware Integration
+
+**Five motors connected to the custom electronics during humanoid robot system integration.**
+
+[▶ Watch video1.mp4 — Five motors connected](video1.mp4)
+
+### Video 2 — Functional Motor Test
+
+**Functional motor rotation test demonstrating operation of the developed electronics after hardware debugging and modification.**
+
+[▶ Watch video2.mp4 — Motor rotation test](video2.mp4)
+
 Custom electronics platform developed for a humanoid robotic system: multi-channel CAN/CAN-FD communication, USB-C integration with a central Linux computer, 48 V power distribution, regulated auxiliary power rails, hardware protection, remote debugging, and validation on real robot hardware.
 
 This project was developed by **GEC Engineering**.  
@@ -241,7 +255,7 @@ https://github.com/gridinwork/JK-BMS-PB2A16S-20P
 
 ## Project Files and Media
 
-This repository is intended to contain available engineering materials related to the development, including test firmware, schematics, PCB/manufacturing files, technical documentation, hardware photographs, debugging photographs, robot-integration photographs and a short validation video. Some materials may be omitted or simplified where required by client confidentiality.
+This repository contains available engineering materials related to the development, including hardware photographs, debugging photographs, robot-integration photographs and hardware demonstration videos. Additional test firmware, schematics, PCB/manufacturing files and technical documentation may be added where permitted. Some materials may be omitted or simplified where required by client confidentiality.
 
 ---
 
@@ -252,6 +266,16 @@ This repository is intended to contain available engineering materials related t
 Компания **GEC Engineering** разработала специализированную электронную систему для мобильного гуманоидного робота по техническому заданию клиента.
 
 **Главный инженер проекта — Oleg Gridin, BEng.**
+
+### Видео испытаний
+
+**Видео 1 — Интеграция оборудования:** клиент демонстрирует собранную роботизированную систему с пятью моторами, подключёнными к разработанной электронике.
+
+[▶ Смотреть video1.mp4 — подключены пять моторов](video1.mp4)
+
+**Видео 2 — Функциональный тест двигателя:** демонстрация вращения подключённого мотора после аппаратной отладки и модификации PCB.
+
+[▶ Смотреть video2.mp4 — тест вращения двигателя](video2.mp4)
 
 Основной задачей было создать компактную интегрированную электронику, которая одновременно обеспечивает связь центрального компьютера робота с несколькими независимыми CAN/CAN-FD шинами и распределяет основное питание 48 В между приводами, формируя дополнительные стабилизированные напряжения для бортовой электроники.
 
@@ -295,7 +319,9 @@ https://github.com/candle-usb/candleLight_fw
 
 ### Связанный проект BMS
 
-GEC Engineering также разработала отдельную систему мониторинга и диагностики BMS для мощных роботизированных платформ:
+GEC Engineering также разработала отдельные системы мониторинга и диагностики BMS для мощных роботизированных платформ.
+
+Подробное описание BMS-разработки:
 
 https://github.com/gridinwork/JK-BMS-PB2A16S-20P
 

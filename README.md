@@ -1,5 +1,7 @@
 # Humanoid Robot CAN & Power Controller
 
+![Humanoid Robot Project](0-Title.jpg)
+
 Custom electronics platform developed for a humanoid robotic system: multi-channel CAN/CAN-FD communication, USB-C integration with a central Linux computer, 48 V power distribution, regulated auxiliary power rails, hardware protection, remote debugging, and validation on real robot hardware.
 
 This project was developed by **GEC Engineering**.  
@@ -11,16 +13,14 @@ This project was developed by **GEC Engineering**.
 
 The client required a compact, integrated electronics solution for a mobile humanoid robot powered from a 48 V battery and controlled by an NVIDIA Jetson Orin Nano.
 
-The robot architecture includes multiple motorized limbs, RobStride actuators, servo-driven joints, auxiliary mechanisms and end-effectors. Instead of using multiple independent communication adapters and separate power modules, the goal was to consolidate the communication and power-distribution functions into a dedicated custom electronics platform.
+The robot architecture includes multiple motorized limbs, RobStride actuators, servo-driven joints, auxiliary mechanisms and end-effectors. Instead of using multiple independent communication adapters and separate power modules, the goal was to consolidate communication and power-distribution functions into dedicated custom electronics.
 
-The development therefore focused on two main subsystems:
+The development focused on two main subsystems:
 
-1. **Multi-channel CAN / CAN-FD communication board**
+1. **Multi-channel CAN / CAN-FD communication system**
 2. **48 V Power Distribution Board (PDB)**
 
-The communication subsystem provides several independent CAN/CAN-FD channels and connects them to the robot's central Linux computer through USB-C.
-
-The power subsystem accepts the main 48 V battery supply, distributes high-current power to the robot limbs, and generates regulated auxiliary voltage rails for logic, sensors and other onboard electronics.
+The communication subsystem provides several independent CAN/CAN-FD channels and connects them to the robot's central Linux computer through USB-C. The power subsystem accepts the main 48 V battery supply, distributes high-current power to the robot limbs, and generates regulated auxiliary voltage rails for logic, sensors and other onboard electronics.
 
 The resulting electronics were manufactured and assembled by the client, integrated into the physical robot hardware, remotely debugged together with GEC Engineering, modified after the first hardware tests, and successfully brought to full intended functionality.
 
@@ -44,39 +44,15 @@ The original technical requirements defined a humanoid mobile robot with:
 - compatibility with Linux SocketCAN
 - hardware suitable for real robot operation and service
 
-The communication architecture was intended to support up to **6 independent CAN channels** operating simultaneously.
-
-The power architecture was intended to support:
-
-- 4 main robot limbs
-- 2 reserve channels
-- separate protected high-current power paths
-- auxiliary regulated power for electronics and sensors
+The communication architecture was intended to support up to **6 independent CAN channels** operating simultaneously. The power architecture was intended to support four main robot limbs, two reserve channels, separate protected high-current power paths and auxiliary regulated power for electronics and sensors.
 
 ---
 
 ## System Architecture
 
-The final electronics concept combines communication and power-management functions required by the robot.
-
-### Central Computer
-
-The robot uses an **NVIDIA Jetson Orin Nano** as the high-level controller.
-
-Its responsibilities include:
-
-- high-level robot control
-- actuator communication
-- Linux-based software
-- SocketCAN interface
-- sensor and peripheral integration
-- robot behavior and computation
+The robot uses an **NVIDIA Jetson Orin Nano** as the high-level controller. Its responsibilities include high-level robot control, actuator communication, Linux-based software, SocketCAN interface, sensor/peripheral integration and robot computation.
 
 ### Communication Layer
-
-The custom communication board connects multiple independent CAN/CAN-FD buses to the Jetson through a common USB interface.
-
-Conceptually:
 
 ```text
 Robot Limb / Actuator Bus #1 --+
@@ -88,10 +64,6 @@ CAN Bus #6 (reserve) -----------+
 ```
 
 ### Power Layer
-
-The main robot power system is based on a nominal **48 V battery**.
-
-Conceptually:
 
 ```text
 48 V Battery
@@ -115,270 +87,100 @@ Custom Power Distribution Board
 
 ## Board 1 — Multi-CAN / USB-C Communication System
 
-The first part of the development is the communication board.
+The communication section was developed to replace multiple separate USB-CAN adapters with a compact integrated solution. It provides up to six independent CAN/CAN-FD channels, simultaneous communication, USB-C connection to the central Linux computer, SocketCAN compatibility, independent CAN transceivers, CAN-line protection, termination support and onboard status indication.
 
-Its purpose is to replace multiple separate USB-CAN adapters with a compact integrated solution.
+The requirements included Classical CAN 2.0B, CAN FD/FDCAN, arbitration rates up to approximately 1 Mbit/s and higher CAN-FD data rates where required by connected devices.
 
-### Main Functions
+![3D PCB CAN Communication Section](02_PCB_3D_CAN_Section.png)
 
-- up to 6 independent CAN / CAN-FD channels
-- simultaneous communication on all channels
-- USB-C interface to the central Linux computer
-- Linux SocketCAN compatibility
-- independent CAN transceiver for each channel
-- CAN-line protection
-- termination support
-- compact robot-integrated PCB format
-- onboard status indication
+### candleLight / SocketCAN Architecture
 
-### CAN / CAN-FD Requirements
-
-The development requirements included support for:
-
-- Classical CAN 2.0B
-- CAN FD / FDCAN
-- arbitration rate up to approximately 1 Mbit/s
-- higher CAN-FD data rate where required by connected devices
-- simultaneous independent operation of the channels
-
-The board was intended to communicate with robot actuators and other CAN-based devices used in the humanoid platform.
-
----
-
-## candleLight / SocketCAN Architecture
-
-For the USB-CAN communication architecture, the project used the open-source **candleLight firmware ecosystem** as an important compatibility reference.
-
-Reference project:
+For the USB-CAN communication architecture, the open-source **candleLight firmware ecosystem** was used as an important compatibility reference:
 
 https://github.com/candle-usb/candleLight_fw
 
-The goal was not to use a collection of external adapters inside the robot, but to integrate the required USB-CAN functionality into the custom electronics architecture.
-
-The communication concept was designed around:
-
-- Linux SocketCAN compatibility
-- standard USB-CAN operation
-- integration with Jetson Orin Nano
-- multiple independent CAN channels
-- compact custom PCB implementation
-
-This approach allowed the robot software to interact with the communication subsystem through a familiar Linux CAN interface.
+The goal was not to install a collection of external adapters inside the robot, but to integrate the required USB-CAN functionality into the custom electronics architecture around Linux SocketCAN and the Jetson Orin Nano.
 
 ---
 
-## Board 2 — 48 V Power Distribution Board
+## Board 2 — 48 V Power Distribution System
 
-The second major part of the electronics development is the high-power distribution section.
+The high-power section receives the main robot battery supply and distributes it between the robot's limbs and auxiliary systems.
 
-The PDB receives the main robot battery supply and distributes it between the robot's limbs and auxiliary systems.
-
-### Input
-
-- nominal voltage: **48 V DC**
+- nominal input: **48 V DC**
 - operating range: approximately **40–60 V DC**
+- main outputs: Arm 1, Arm 2, Leg 1, Leg 2 and reserve outputs
+- regulated auxiliary rails: **24 V, 12 V and 5 V**
 
-### Main 48 V Outputs
+The design considered individual output protection, transient protection, reverse-polarity protection, filtering, thermal management, high-current PCB routing and stable low-voltage supply for sensitive electronics.
 
-The architecture provides multiple high-current outputs:
-
-- Arm 1
-- Arm 2
-- Leg 1
-- Leg 2
-- Reserve output 1
-- Reserve output 2
-
-Each limb is treated as an independent power bus.
-
-### Regulated Auxiliary Power
-
-The board also provides regulated rails for auxiliary electronics:
-
-- **24 V**
-- **12 V**
-- **5 V**
-
-These rails are intended for:
-
-- logic electronics
-- sensors
-- actuators
-- communication devices
-- auxiliary mechanisms
-- end-effector electronics
-
-### Power Protection
-
-The design requirements included:
-
-- individual output protection
-- fuse / eFuse concepts
-- transient protection
-- reverse-polarity protection
-- filtering
-- thermal management
-- high-current PCB routing
-- stable low-voltage supply for sensitive electronics
+![3D PCB Power Section](01_PCB_3D_Power_Section.png)
 
 ---
 
 ## Robot Load Analysis
 
-Before the PCB design was finalized, the expected actuator loads were analyzed.
+Before the PCB design was finalized, the expected actuator loads were analyzed. The design documentation considered multiple RobStride motors per limb, additional motor loads, simultaneous and peak-current conditions, voltage-drop risks, current limiting and distribution of power between independent buses.
 
-The robot uses multiple high-power motors per limb.
-
-The design documentation considered:
-
-- multiple RobStride motors per arm
-- multiple RobStride motors per leg
-- additional wheel-drive load
-- simultaneous and peak-current conditions
-- voltage-drop risks
-- current limiting
-- distribution of power between independent limb buses
-
-The theoretical maximum system load was significantly higher than the expected normal operating load, so the power-distribution architecture had to consider current management, protection and load balancing.
-
-This load analysis directly influenced:
-
-- connector selection
-- copper and power-path design
-- protection components
-- DC/DC converter selection
-- thermal design
-- power-bus separation
+This analysis influenced connector selection, copper and power-path design, protection components, DC/DC converter selection, thermal design and power-bus separation.
 
 ---
 
-## PCB Design
+## PCB Design and Manufacturing
 
-The PCB was designed as a custom robot-specific electronics platform rather than as a generic development board.
+The PCB was designed as a custom robot-specific electronics platform rather than as a generic development board. The work included system architecture, schematic design, PCB layout, power-path and communication routing, connector positioning, component selection, protection circuitry, regulated power sections, CAN interfaces, USB interface, status indication and manufacturing preparation.
 
-The design work included:
+The PCB was modeled and reviewed in 3D before manufacturing to verify connector positions, component clearances, board proportions, large power components, wiring access and mechanical integration.
 
-- system architecture
-- schematic design
-- PCB layout
-- power-path routing
-- communication-channel routing
-- connector positioning
-- component selection
-- protection circuitry
-- regulated power sections
-- CAN interfaces
-- USB interface
-- status indication
-- manufacturing preparation
-
-The development requirements were oriented toward practical PCB manufacturing and integration into the robot.
-
----
-
-## 3D PCB Design
-
-The PCB was modeled and reviewed in 3D before manufacturing.
-
-The 3D design stage was used to verify:
-
-- connector positions
-- component clearances
-- board proportions
-- integration constraints
-- large power components
-- access to robot wiring
-- mechanical compatibility
-
-The project photographs include 3D PCB renders showing both the power-conversion section and the multi-channel communication section.
-
----
-
-## Manufacturing and Hardware Assembly
-
-After the electronics design was completed, the client manufactured and assembled the physical hardware.
-
-This allowed the project to move from schematic and PCB design into real-world validation.
-
-The assembled board was then connected to:
-
-- the robot power system
-- multiple motors
-- communication lines
-- test equipment
-- the mechanical robot platform
+After the design was completed, the client manufactured and assembled the physical hardware and connected it to the robot power system, motors, communication lines and test equipment.
 
 ---
 
 ## Remote Hardware Debugging
 
-After the first hardware assembly, GEC Engineering worked with the client remotely to perform system bring-up and debugging.
+After the first hardware assembly, **GEC Engineering worked remotely with the client** to perform system bring-up and debugging. The client performed measurements directly on the physical PCB according to our instructions.
 
-The debugging process included:
+The debugging process included voltage measurements, checking power rails and PCB nodes, communication verification, analysis of hardware behavior and comparison of real measurements with the design.
 
-- voltage measurements
-- checking power rails
-- checking PCB nodes
-- communication verification
-- identifying hardware behavior
-- comparing real measurements with the design
-- guiding the client through measurement and modification procedures
+![Remote Hardware Debugging 1](03_Remote_Debugging_1.png)
 
-The project photographs show this stage with the client performing measurements directly on the physical PCB using a multimeter and test probes.
+![Remote Hardware Debugging 2](04_Remote_Debugging_2.png)
 
 ---
 
 ## Hardware Modification After Initial Testing
 
-During the first real-hardware debugging stage, a small PCB modification was identified as necessary.
+During the first real-hardware debugging stage, a small PCB modification was identified as necessary. GEC Engineering prepared the modification procedure, and the client performed the hardware correction directly on the manufactured PCB according to our instructions.
 
-GEC Engineering provided the client with instructions for the modification.
+![PCB Modification 1](05_PCB_Modification_1.png)
 
-The client then performed the hardware correction directly on the manufactured PCB according to these instructions.
+![PCB Modification 2](06_PCB_Modification_2.png)
 
-After this modification:
-
-- the board was tested again
-- the communication and power sections were verified
-- the system reached the intended functional state
-
-This step is an important part of the project because it demonstrates not only PCB design, but also practical hardware bring-up, fault analysis and engineering support after manufacturing.
+After this modification the board was tested again, the communication and power sections were verified, and the system reached the intended functional state. This stage demonstrates practical hardware bring-up, fault analysis and engineering support after manufacturing—not only schematic and PCB design.
 
 ---
 
 ## Robot Integration
 
-After debugging, the board was installed into the physical robot assembly.
+After debugging, the board was installed into the physical robotic assembly with the actual motors, power wiring and communication wiring connected.
 
-The photographs show the electronics mounted on the robot structure with multiple motors connected.
+![Robot Integration 1](07_Robot_Integration_1.png)
 
-This confirms that the project progressed beyond PCB design and was integrated into a real electromechanical system.
+![Robot Integration 2](08_Robot_Integration_2.png)
 
-The integrated hardware includes:
-
-- custom PCB
-- robot structural components
-- multiple connected motors
-- power wiring
-- communication wiring
-- active electronics
+This confirms that the project progressed beyond PCB design and was integrated into a real electromechanical humanoid robot system.
 
 ---
 
 ## Final Functional Validation
 
-After the PCB modification and repeated testing, the system achieved full intended functionality.
+After the PCB modification and repeated testing, the system achieved full intended functionality. The final tests show the powered custom PCB, active status LEDs, multiple communication channels, connected motor wiring and operating power distribution in the real robot hardware.
 
-The final validation photographs show:
+![Final Functional Test 1](09_Final_Test_1.png)
 
-- the powered PCB
-- active status LEDs
-- multiple communication channels
-- connected motor wiring
-- power distribution operating
-- the electronics installed in the robot system
+![Final Functional Test 2](10_Final_Test_2.png)
 
-The successful bring-up demonstrates the complete engineering cycle:
+The complete engineering cycle was:
 
 ```text
 Client Requirements
@@ -389,9 +191,7 @@ Electrical Design
         ↓
 PCB Design
         ↓
-Manufacturing
-        ↓
-Hardware Assembly
+Manufacturing & Assembly
         ↓
 Remote Debugging
         ↓
@@ -406,23 +206,19 @@ Final Functional Validation
 
 ## Main Engineering Work Performed by GEC Engineering
 
-GEC Engineering was responsible for the electronics-development work based on the client's technical requirements.
-
-The engineering scope included:
+GEC Engineering was responsible for the electronics-development work based on the client's technical requirements, including:
 
 - analysis of the humanoid robot architecture
-- power-budget analysis
+- power-budget and actuator-load analysis
 - CAN / CAN-FD communication architecture
 - USB-CAN integration concept
 - SocketCAN compatibility planning
 - custom PCB architecture
-- schematic design
-- PCB layout
+- schematic design and PCB layout
 - power-distribution design
-- regulated power-rail design
+- regulated 24/12/5 V power-rail design
 - connector and interface planning
-- component selection
-- protection circuitry
+- component selection and protection circuitry
 - manufacturing preparation
 - hardware bring-up support
 - remote debugging
@@ -435,39 +231,17 @@ The engineering scope included:
 
 ## Related BMS Development
 
-GEC Engineering has also developed dedicated battery-management monitoring and diagnostic systems for high-power robotic platforms.
+GEC Engineering has also developed dedicated battery-management monitoring and diagnostic systems for high-power robotic platforms, including multi-BMS monitoring, RS-485 communication, diagnostics and battery-system integration.
 
-This includes multi-BMS monitoring, RS-485 communication, diagnostics and battery-system integration.
-
-Detailed BMS development is documented separately:
+Detailed BMS development:
 
 https://github.com/gridinwork/JK-BMS-PB2A16S-20P
 
 ---
 
-## Project Files
+## Project Files and Media
 
-This repository is intended to include the available engineering materials related to this development, including where applicable:
-
-- test firmware
-- schematic files
-- PCB design files
-- manufacturing files
-- technical documentation
-- hardware photographs
-- debugging photographs
-- robot integration photographs
-- short validation video
-
-Some project materials may be omitted or simplified where required by client confidentiality.
-
----
-
-## Project Media
-
-A short hardware validation video will be added to this repository.
-
-The video demonstrates the physical electronics operating in the assembled robotic system.
+This repository is intended to contain available engineering materials related to the development, including test firmware, schematics, PCB/manufacturing files, technical documentation, hardware photographs, debugging photographs, robot-integration photographs and a short validation video. Some materials may be omitted or simplified where required by client confidentiality.
 
 ---
 
@@ -479,246 +253,51 @@ The video demonstrates the physical electronics operating in the assembled robot
 
 **Главный инженер проекта — Oleg Gridin, BEng.**
 
-Основной задачей было создать компактную интегрированную электронику, которая одновременно решает две большие задачи:
+Основной задачей было создать компактную интегрированную электронику, которая одновременно обеспечивает связь центрального компьютера робота с несколькими независимыми CAN/CAN-FD шинами и распределяет основное питание 48 В между приводами, формируя дополнительные стабилизированные напряжения для бортовой электроники.
 
-1. обеспечивает связь центрального компьютера робота с несколькими независимыми CAN/CAN-FD шинами;
-2. распределяет основное питание 48 В между конечностями и формирует дополнительные стабилизированные напряжения для электроники.
+Центральным вычислителем системы является **NVIDIA Jetson Orin Nano**. В составе робота используются моторизированные руки и ноги, приводы RobStride, дополнительные исполнительные механизмы, CAN/CAN-FD, основное питание 48 В и вспомогательные линии 24 В, 12 В и 5 В.
 
----
+### Multi-CAN / USB-C
 
-## Архитектура робота
+Коммуникационная часть рассчитана на одновременную работу до шести независимых CAN/CAN-FD каналов и подключение к Jetson Orin Nano через USB-C. Предусмотрены отдельные CAN-трансиверы, защита линий, терминаторы, индикация и совместимость с Linux SocketCAN.
 
-Центральным вычислителем системы является **NVIDIA Jetson Orin Nano**.
-
-В составе робота используются:
-
-- моторизированные руки и ноги;
-- приводы RobStride;
-- дополнительные сервоприводы и исполнительные механизмы;
-- CAN / CAN-FD;
-- питание 48 В;
-- вспомогательные линии 24 В, 12 В и 5 В;
-- различные датчики и конечные исполнительные устройства.
-
-Для такой архитектуры требовалось отказаться от набора отдельных адаптеров и создать собственную компактную электронную платформу.
-
----
-
-## Плата связи Multi-CAN / USB-C
-
-Первая часть разработки — многоканальная коммуникационная система.
-
-Она предназначена для одновременной работы нескольких независимых CAN/CAN-FD каналов и подключения их к Jetson Orin Nano через USB-C.
-
-Основные функции:
-
-- до 6 независимых CAN/CAN-FD каналов;
-- одновременная работа всех каналов;
-- USB-C подключение к Linux-компьютеру;
-- совместимость с SocketCAN;
-- отдельный CAN-трансивер на каждый канал;
-- защита CAN-линий;
-- терминаторы;
-- индикация состояния;
-- компактная интеграция в корпус робота.
-
----
-
-## candleLight / SocketCAN
-
-При разработке USB-CAN части использовалась архитектура open-source проекта **candleLight** как основа совместимости с Linux SocketCAN.
-
-Исходный проект:
+При разработке USB-CAN части архитектура open-source проекта **candleLight** использовалась как референс совместимости:
 
 https://github.com/candle-usb/candleLight_fw
 
-Задачей было не просто установить несколько готовых адаптеров, а интегрировать необходимую функциональность в собственную PCB-систему робота.
+### Силовая часть 48 В
 
----
+Плата принимает основное питание 48 В (ориентировочный рабочий диапазон 40–60 В), распределяет его по независимым силовым каналам приводов и формирует стабилизированные линии **24 В, 12 В и 5 В**. При проектировании учитывались рабочие и пиковые токи, одновременная работа приводов, просадки напряжения, защита отдельных линий, тепловые режимы, выбор разъёмов и силовая разводка PCB.
 
-## Плата распределения питания 48 В
+### Разработка и проверка PCB
 
-Вторая основная часть разработки — силовая система.
+Проект включал анализ технического задания, разработку архитектуры, схемотехнику, PCB layout, силовую разводку, CAN-интерфейсы, USB-интерфейс, DC/DC преобразователи, защиту, подбор компонентов, расположение разъёмов и подготовку к производству. Перед изготовлением плата была проверена в 3D.
 
-Плата принимает питание от основного аккумулятора робота:
+После завершения проектирования клиент изготовил и собрал реальную печатную плату.
 
-- номинально 48 В;
-- рабочий диапазон примерно 40–60 В.
+### Удалённая отладка и модификация
 
-Основное питание распределяется по независимым силовым шинам:
+После сборки GEC Engineering совместно с клиентом выполнила удалённую аппаратную отладку. Клиент по нашим инструкциям проводил измерения непосредственно на плате. Проверялись напряжения, силовые линии, отдельные узлы PCB, коммуникационные каналы и фактическое поведение оборудования.
 
-- левая/правая рука;
-- левая/правая нога;
-- два резервных канала.
+В процессе первых испытаний была определена необходимость небольшой модификации изготовленной платы. GEC Engineering подготовила инструкции, а клиент выполнил модификацию по нашим указаниям. После этого система была повторно проверена и достигла полного запланированного функционала.
 
-Также формируются стабилизированные линии:
+### Интеграция в робота
 
-- 24 В;
-- 12 В;
-- 5 В.
+После отладки плата была установлена в реальную роботизированную систему с подключенными двигателями, силовой и коммуникационной проводкой. Финальные испытания подтвердили работу питания, LED-индикации, коммуникационных каналов и электроники в составе реального оборудования.
 
-Они используются для питания логики, сенсоров, дополнительных приводов и вспомогательных узлов.
+Таким образом, проект прошёл полный инженерный цикл: от анализа требований и разработки схемы/PCB до изготовления, удалённой аппаратной отладки, корректировки и финальной проверки в составе реального гуманоидного робота.
 
----
+### Работы GEC Engineering
 
-## Анализ нагрузки
-
-Перед разработкой силовой части был выполнен расчёт нагрузки приводов.
-
-В системе используется большое количество высокомощных двигателей RobStride и дополнительные моторы.
-
-При проектировании учитывались:
-
-- рабочие токи;
-- пиковые токи;
-- одновременная работа нескольких приводов;
-- просадки напряжения;
-- защита отдельных линий;
-- распределение нагрузки;
-- тепловые режимы;
-- выбор разъёмов и силовой части PCB.
-
----
-
-## Разработка PCB
-
-Проект включал:
-
-- анализ технического задания;
-- разработку архитектуры;
-- схемотехнику;
-- PCB layout;
-- силовую разводку;
-- разводку CAN;
-- USB-интерфейс;
-- DC/DC преобразователи;
-- защиту;
-- подбор компонентов;
-- расположение разъёмов;
-- подготовку к производству.
-
-Перед изготовлением плата была проверена в 3D.
-
----
-
-## Производство и сборка
-
-После завершения проектирования клиент изготовил реальную печатную плату и собрал оборудование.
-
-Плата была подключена к реальным приводам и механической системе робота.
-
----
-
-## Удалённая отладка
-
-После сборки GEC Engineering совместно с клиентом выполнила удалённую отладку аппаратуры.
-
-Клиент по нашим инструкциям выполнял измерения непосредственно на плате.
-
-Проверялись:
-
-- напряжения;
-- силовые линии;
-- отдельные узлы PCB;
-- работа коммуникационных каналов;
-- фактическое поведение оборудования.
-
----
-
-## Модификация PCB после первых испытаний
-
-В процессе первой аппаратной отладки была определена необходимость небольшой модификации уже изготовленной платы.
-
-GEC Engineering подготовила инструкции.
-
-Клиент самостоятельно выполнил модификацию по нашим указаниям.
-
-После этого система была повторно проверена и достигла полного запланированного функционала.
-
----
-
-## Интеграция в реального робота
-
-После отладки плата была установлена в реальную роботизированную систему.
-
-На фотографиях проекта видно:
-
-- установленную PCB;
-- механическую часть робота;
-- подключённые двигатели;
-- силовую проводку;
-- работающую электронику.
-
-Таким образом, проект не ограничился разработкой схемы и PCB — оборудование было физически изготовлено, подключено к реальной роботизированной системе и проверено клиентом.
-
----
-
-## Финальная проверка
-
-После внесения модификации и повторной отладки система работала в полном объёме.
-
-Фотографии финального теста показывают:
-
-- активное питание;
-- работающую LED-индикацию;
-- активные коммуникационные каналы;
-- подключённые двигатели;
-- работоспособность платы в реальной системе.
-
----
-
-## Работы GEC Engineering
-
-В рамках проекта GEC Engineering выполнила:
-
-- анализ архитектуры гуманоидного робота;
-- расчёт силовой нагрузки;
-- архитектуру CAN/CAN-FD;
-- концепцию USB-CAN;
-- интеграцию SocketCAN;
-- разработку собственной PCB;
-- схемотехнику;
-- PCB layout;
-- проектирование силовой части;
-- DC/DC питание 24/12/5 В;
-- защиту силовых и сигнальных линий;
-- подбор компонентов;
-- подготовку к производству;
-- техническую поддержку при сборке;
-- удалённую аппаратную отладку;
-- разработку инструкции по модификации PCB;
-- поддержку финальной проверки оборудования.
+В рамках проекта GEC Engineering выполнила анализ архитектуры робота, расчёт силовой нагрузки, разработку CAN/CAN-FD и USB-CAN архитектуры, интеграцию SocketCAN, схемотехнику, PCB layout, проектирование силовой части и DC/DC питания 24/12/5 В, защиту силовых и сигнальных линий, подбор компонентов, подготовку к производству, техническую поддержку при сборке, удалённую отладку, разработку инструкции по модификации PCB и поддержку финальной проверки оборудования.
 
 **Главный инженер проекта — Oleg Gridin, BEng.**
 
----
+### Связанный проект BMS
 
-## Связанный проект BMS
-
-GEC Engineering также разработала отдельную систему мониторинга и диагностики BMS для мощных роботизированных платформ.
-
-Подробное описание BMS-разработки:
+GEC Engineering также разработала отдельную систему мониторинга и диагностики BMS для мощных роботизированных платформ:
 
 https://github.com/gridinwork/JK-BMS-PB2A16S-20P
-
----
-
-## Материалы проекта
-
-В данный репозиторий будут добавлены доступные материалы проекта:
-
-- тестовая прошивка;
-- схемы;
-- PCB-файлы;
-- производственные файлы;
-- техническая документация;
-- фотографии разработки;
-- фотографии удалённой отладки;
-- фотографии модификации PCB;
-- фотографии интеграции платы в робота;
-- короткое видео проверки оборудования.
-
-Часть материалов может быть сокращена или не опубликована из-за конфиденциальности клиента.
 
 ---
 

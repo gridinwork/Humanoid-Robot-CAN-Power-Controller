@@ -1,0 +1,46 @@
+------------------------------------------------------------------------------------------
+Gerber File Extension Report For: MotorDriver_CAN.GBR   12/8/2025  3:07:42 PM
+------------------------------------------------------------------------------------------
+
+
+------------------------------------------------------------------------------------------
+Layer Extension     Layer Description                      
+------------------------------------------------------------------------------------------
+.GTO                Top Overlay                             
+.GTP                Top Paste                               
+.GTS                Top Solder                              
+.GTL                Top Layer                               
+.G1                 Inner Layer 1                           
+.G2                 Inner Layer 2                           
+.GBL                Bottom Layer                            
+.GBS                Bottom Solder                           
+.GBP                Bottom Paste                            
+.GBO                Bottom Overlay                          
+.GM1                Mechanical 1                            
+.GM2                Top 3D Body                             
+.GM3                Top Courtyard                           
+.GM4                Top Component Outline                   
+.GM5                Top Assembly                            
+.GM6                Mechanical 6                            
+.GM7                Top Designator                          
+.GM8                Bottom Designator                       
+.GM11               Mechanical 11                           
+.GM12               Bottom Component Outline                
+.GM13               Mechanical 13                           
+.GM15               Mechanical 15                           
+.GM16               Top Component Center                    
+.GM20               Bottom Assembly                         
+.GM21               Bottom Courtyard                        
+.GM23               Bottom 3D Body                          
+.GM24               Bottom Component Center                 
+.GKO                Keep-Out Layer                          
+.GPT                Top Pad Master                          
+.GPB                Bottom Pad Master                       
+.GML                Multi-Layer                             
+.1                  Dielectric 1                            
+.2                  Dielectric 2                            
+.3                  Dielectric 3                            
+.4                  Dielectric 4                            
+.5                  Dielectric 5                            
+.GM                 Profile                                 
+------------------------------------------------------------------------------------------

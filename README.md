@@ -12,13 +12,13 @@ Custom electronics platform developed by **GEC Engineering** for a humanoid robo
 
 Five motors connected to the custom electronics during humanoid robot system integration.
 
-[▶ Watch video1.mp4 — Five motors connected](video1.mp4)
+https://github.com/user-attachments/assets/e82cf95d-304d-462a-9d68-b101e2b2865c
 
 ### Video 2 — Functional Motor Test
 
 Functional motor rotation test demonstrating operation of the developed electronics after hardware debugging and modification.
 
-[▶ Watch video2.mp4 — Motor rotation test](video2.mp4)
+https://github.com/user-attachments/assets/072d7310-e635-4128-970f-823c1a19b04a
 
 ---
 
